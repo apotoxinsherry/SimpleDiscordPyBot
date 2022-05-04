@@ -5,19 +5,17 @@ import requests
 from apikeys import jokekey
 
 
-url = "https://joke3.p.rapidapi.com/v1/joke"
+url = "https://jokeapi-v2.p.rapidapi.com/joke/Any"
 
-payload = {
-	"content": "A joke here",
-	"nsfw": "false"
-}
+querystring = {"format":"json","contains":"C%23","idRange":"0-150","blacklistFlags":"nsfw,racist"}
+
 headers = {
-	"content-type": "application/json",
-	"X-RapidAPI-Host": "joke3.p.rapidapi.com",
+	"X-RapidAPI-Host": "jokeapi-v2.p.rapidapi.com",
 	"X-RapidAPI-Key": jokekey
 }
 
-response = requests.request("POST", url, json=payload, headers=headers)
+
+
 
 
 class Jokes(commands.Cog):
@@ -26,7 +24,9 @@ class Jokes(commands.Cog):
     
     @commands.command()
     async def joke(self, ctx):
-        await ctx.send(json.loads(response.text)['content'])
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        await ctx.send(json.loads(response.text)['setup'])
+        await ctx.send(json.loads(response.text)['delivery'])
 
 
 
