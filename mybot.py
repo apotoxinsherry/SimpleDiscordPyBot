@@ -11,7 +11,7 @@ mycogs = []
 
 for file in os.listdir("Cogs/"):
     if file.endswith(".py"):
-        mycogs.append("Cogs." + file[:-3])
+        mycogs.append("Cogs." + file[:-3]) #Cogs should represent the directory where the cogs are stored
 
 
 for extension in mycogs:
