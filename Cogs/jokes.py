@@ -2,17 +2,22 @@ import nextcord as discord
 from nextcord.ext import commands
 import json
 import requests
-from apikeys import jokekey
+from apikeys import rapidapikey
+from apikeys import randomstuffapikey
 
 
-url = "https://jokeapi-v2.p.rapidapi.com/joke/Any"
+url = "https://random-stuff-api.p.rapidapi.com/joke"
 
-querystring = {"format":"json","contains":"C%23","idRange":"0-150","blacklistFlags":"nsfw,racist"}
+querystring = {}
 
 headers = {
-	"X-RapidAPI-Host": "jokeapi-v2.p.rapidapi.com",
-	"X-RapidAPI-Key": jokekey
-}
+    'authorization': randomstuffapikey,
+    'x-rapidapi-host': "random-stuff-api.p.rapidapi.com",
+    'x-rapidapi-key': rapidapikey
+    }
+
+response = requests.request("GET", url, headers=headers, params=querystring)
+
 
 
 
@@ -25,8 +30,7 @@ class Jokes(commands.Cog):
     @commands.command()
     async def joke(self, ctx):
         response = requests.request("GET", url, headers=headers, params=querystring)
-        await ctx.send(json.loads(response.text)['setup'])
-        await ctx.send(json.loads(response.text)['delivery'])
+        await ctx.send(json.loads(response.text)['joke'])
 
 
 
