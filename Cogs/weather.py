@@ -23,12 +23,12 @@ class weather(commands.Cog):
         self.bot = bot
     
 
-    @commands.Command()
-    async def weather(ctx, city):
-        params = {city: 'The city you want weather details for'}
-        response = await requests.request("GET", url, headers=headers, params=params)
-        output = json.loads(response)
-        await ctx.send(f"The Weather is: {output['location']}")
+    @commands.command()
+    async def weather(self, ctx, city):
+        params = {"city":city}
+        response = requests.request("GET", url, headers=headers, params=params)
+        output = json.loads(response.text)
+        await ctx.send(f"Location : {output[0]['location']['name']} \nTemperature: {output[0]['current']['temperature']}°C \nLow: {output[0]['forecast'][1]['low']}°C \nHigh: {output[0]['forecast'][1]['high']}°C ")
 
         
 def setup(client):
