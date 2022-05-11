@@ -1,3 +1,4 @@
+from distutils.log import error
 import nextcord as discord
 from nextcord.ext import commands
 import asyncio
@@ -30,6 +31,9 @@ class weather(commands.Cog):
         output = json.loads(response.text)
         await ctx.send(f"Location : {output[0]['location']['name']} \nTemperature: {output[0]['current']['temperature']}°C \nLow: {output[0]['forecast'][1]['low']}°C \nHigh: {output[0]['forecast'][1]['high']}°C ")
 
+    @weather.error
+    async def weather_error(self,ctx, error):
+        await ctx.send("Please provide a city name")
         
 def setup(client):
     client.add_cog(weather(client))
