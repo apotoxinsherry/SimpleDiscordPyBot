@@ -6,6 +6,8 @@ from AnilistPython import Anilist
 from apikeys import anilistid
 from apikeys import anilistsecret
 
+from bs4 import BeautifulSoup
+
 my_client = Anilist(cid=anilistid, csecret=anilistsecret)
 
 class anidata(commands.Cog):
@@ -16,7 +18,8 @@ class anidata(commands.Cog):
     async def anime(self, ctx, name):
         animedata = my_client.get_anime(name)
         animeid = my_client.get_anime_id(name)
-        my_embed = discord.Embed(title=animedata['name_english'], url=f"https://anilist.co/anime/{animeid}", description=animedata['desc'], color=0x323834)
+        mydesc = BeautifulSoup(animedata['desc'], "lxml").text
+        my_embed = discord.Embed(title=animedata['name_english'], url=f"https://anilist.co/anime/{animeid}", description=mydesc, color=0x323834)
         my_embed.set_thumbnail(url=animedata['cover_image'])
         try:
             my_embed.add_field(name='Episodes', value=animedata['airing_episodes'], inline=True)
@@ -31,7 +34,8 @@ class anidata(commands.Cog):
     async def manga(self, ctx, name):
         mangadata = my_client.get_manga(name)
         mangaid = my_client.get_manga_id(name)
-        my_embed = discord.Embed(title=mangadata['name_english'], url=f"https://anilist.co/anime/{mangaid}", description=mangadata['desc'], color=0x323834)
+        description = BeautifulSoup(mangadata['desc'], "lxml").text
+        my_embed = discord.Embed(title=mangadata['name_english'], url=f"https://anilist.co/anime/{mangaid}", description=description, color=0x323834)
         my_embed.set_thumbnail(url=mangadata['cover_image'])
         my_embed.add_field(name='Chapters', value=mangadata['chapters'], inline=True)
         my_embed.add_field(name="Rating", value=mangadata['average_score'], inline=True)
