@@ -38,6 +38,15 @@ class anidata(commands.Cog):
         my_embed.add_field(name='Genres', value=mangadata['genres'], inline=False)
         await ctx.send(embed=my_embed)
 
+    
+    @anime.error
+    async def anime_error(self,ctx,error):
+        await ctx.send("Please provide an anime.")
+    
+    @manga.error
+    async def manga_error(self, ctx, error):
+        await ctx.send("Please provide a manga")
+
 
 
 def setup(client):
