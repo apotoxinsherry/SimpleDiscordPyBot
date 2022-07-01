@@ -22,6 +22,12 @@ for extension in mycogs:
 async def on_ready():
     print("We're logged in!")
 
+
+# @client.event
+# async def on_message(message):
+#     if message.author == client.user:
+#         return
+
 @client.command()
 async def hello(ctx):
     await ctx.send("Hello " + str(ctx.author)[:-5])
