@@ -20,7 +20,7 @@ response = requests.request("GET", url, headers=headers, params=querystring)
 
 
 
-
+# haha penis
 
 
 class Jokes(commands.Cog):
