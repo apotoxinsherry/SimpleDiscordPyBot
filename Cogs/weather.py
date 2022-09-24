@@ -1,4 +1,3 @@
-from distutils.log import error
 import nextcord as discord
 from nextcord.ext import commands
 import asyncio
