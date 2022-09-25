@@ -92,7 +92,7 @@ class tictactoe(commands.Cog):
     async def getInput(self,ctx):
         await ctx.send("Enter a number from 1 to 9")
         inp = await self.bot.wait_for("message")
-        validInput = [1,2,3,4,5,6,7,8,9]
+        validInput = [1,2,3,4,5,6,7,8,9, 'q']
         print(inp.content)
         while inp.content not in validInput: #check what kind of input are we getting from the user and find a way to convert it into int.
             await ctx.send("Please enter a valid input") # look into the nextcord docs, prolly
@@ -115,6 +115,10 @@ class tictactoe(commands.Cog):
         while player.ingame:
             await ctx.send(player.display())
             inp = await self.getInput(ctx=ctx)
+
+            if(inp=='q'): # check for user to quit in middle of the game. 
+                player.ingame=False
+                self.removeplayer(player=player)
 
 
             if isTie(player.gameboard):
