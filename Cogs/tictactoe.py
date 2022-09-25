@@ -21,6 +21,7 @@ from random import randint
 class player():
     def __init__(self, name):
         self.name = name
+        self.ingame = False
         self.uchoice = 'X'
         self.cchoice = 'O'
         self.gameboard = [' ']*10
@@ -62,13 +63,23 @@ def checker(icon, board):
         return 0
 
 
+def placeicon_user(location, icon, board):
+    board[location]=icon
+
+def placeicon_computer(icon, board):
+    location = randint(1,9)
+    board[location]=icon
+
+def isTie(board):
+    tie = True
+    for i in range(1,10):
+        if board[i]==' ':
+            tie = False
+            return tie
+    
+    return tie
 
 
-
-
-
-def inputverify(input):
-    return input in [x for x in range(1,10)]
 
 
 
@@ -76,29 +87,84 @@ class tictactoe(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.players = []
+
+
+    async def getInput(self,ctx):
+        await ctx.send("Enter a number from 1 to 9")
+        inp = await self.bot.wait_for("message")
+        validInput = [1,2,3,4,5,6,7,8,9]
+        print(inp.content)
+        while inp.content not in validInput: #check what kind of input are we getting from the user and find a way to convert it into int.
+            await ctx.send("Please enter a valid input") # look into the nextcord docs, prolly
+            inp = await self.bot.wait_for('message')
+        
+        return inp
+
+
+
+    @commands.Cog.listener()
+    async def on_message(self,message):
+        if message.author == self.bot.user:
+            return
+
         
 
 
     async def gameplay(self, ctx,player):
-        await ctx.send("Provide a number from 1 to 9")
-        ingame = True
-        inp = await self.bot.wait_for('message')
-        correctInput =  inputverify(int(inp.content))
-        while not correctInput:
-            await ctx.send("Please enter a valid location")
-            inp = await self.bot.wait_for('message')
-            correctInput = inputverify(inp.content)
-        else:
-            ingame = True
-            while ingame:
-                await ctx.send(player.display())
-                kek = await self.bot.wait_for('message')
-                await ctx.send(kek)
-                print("end of operation")
+        player.ingame = True
+        while player.ingame:
+            await ctx.send(player.display())
+            inp = await self.getInput(ctx=ctx)
+
+
+            if isTie(player.gameboard):
+                await ctx.send("It's a Tie")
+                self.removeplayer(player=player)
                 break
+
+            if checker(player.uchoice, player.gameboard):
+                await ctx.send("Player has won!")
+                self.removeplayer(player)
+                break
+
+            if checker(player.cchoice, player.gameboard):
+                await ctx.send("Computer has won1")
+                self.removeplayer(player)
+                break
+            
+            await ctx.send("Enter the location of the icon to be placed:")
+
+            
+            
+
+            while(True):    #loop to check if the position has already been filled. If filled, asks the user to enter a new position. If not, confinues with the loop. 
+
+                loc = int(inp.content)
+
+                if(player.board[loc]!=' '):
+                    await ctx.send("This location has already been filled. Please enter another location")   
+                    inp = await self.getInput(ctx=ctx)
+                else:
+                    break
+
+            
+            placeicon_user(loc, player.uchoice, player.gameboard)
+            placeicon_computer(player.cchoice, player.gameboard)
+            inp = await self.getInput(ctx=ctx)
+
+
+
+
     
 
 
+
+
+    def removeplayer(self, player):
+        for item in self.players:
+            if item.name == player.name:
+                player.ingame = False
+                self.players.remove(player)
 
 
 
@@ -122,6 +188,7 @@ class tictactoe(commands.Cog):
 
         else:
             await ctx.send("Sorry, this user is already in game")
+            #implement a check here to send the user back to gameplay
 
 
 
